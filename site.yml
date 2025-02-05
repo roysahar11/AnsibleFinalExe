@@ -1,0 +1,37 @@
+---
+- name: Service is installed and enabled
+  hosts: managed_true
+  become: true
+  vars:
+    restart_time: "{{ aws_tags.Restart.split(' ') }}"
+    restart_weekday: "{{ restart_time[0] }}"
+    restart_hour: "{{ restart_time[1].split(':')[0] }}"
+    restart_minute: "{{ restart_time[1].split(':')[1] }}"
+  
+  roles:
+    - name: Service is installed and enabled according to the 'Service' tag
+      role: service
+      vars:
+        service: "{{ group_service }}"
+        packages: "{{ group_packages }}"
+  
+  tasks:
+    - name: System hostname is configured to the 'Name' tag of the instance
+      hostname:
+        name: "{{ aws_tags.Name }}"
+
+    - name: Weekly restart cronjob is configured
+      cron:
+        name: "Weekly Restart"
+        user: root
+        weekday: "{{ restart_weekday }}"
+        hour: "{{ restart_hour }}"
+        minute: "{{ restart_minute }}"
+        job: "systemctl reboot"
+
+    # - name: debug
+    #   debug:
+    #     msg: "|
+    #     {{ restart_weekday }}
+    #     {{ restart_hour }}
+    #     {{ restart_minute }}"

@@ -1,0 +1,27 @@
+## NOTE: this dynamic inventory file references AWS access key and secret key that are stored locally on ~/.aws/credential, under the "default" profile
+## SSH private key path is meant to be specified in ~/.ansible.cfg
+
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1  # Replace with your region
+
+aws_profile: default
+
+hostnames:
+  - private-ip-address
+  # - name: tag:Name
+hostvars_prefix: aws_
+
+keyed_groups:
+  - prefix: managed
+    key: aws_tags.Managed
+  - prefix: service
+    key: aws_tags.Service
+
+filters: 
+  tag:Owner: roysahar 
+  tag:Managed: true
+
+compose:
+  # ansible_host: private-ip-address
+  ansible_user: '"ubuntu"'

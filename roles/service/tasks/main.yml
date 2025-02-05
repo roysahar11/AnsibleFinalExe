@@ -1,0 +1,17 @@
+---
+- name: Neccessary packages are installed
+  apt:
+    name: "{{ packages }}"
+    allow_downgrade: true
+
+- name: Service is enabled and started
+  service:
+    name: "{{ service }}"
+    state: started
+    enabled: true
+
+# - name: debug package and service
+#   debug:
+#     msg: "|
+#     {{ packages }}
+#     {{ service }}"

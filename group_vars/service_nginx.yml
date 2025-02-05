@@ -1,0 +1,4 @@
+---
+group_packages:
+  - "nginx={{ aws_tags.Version }}"
+group_service: nginx
